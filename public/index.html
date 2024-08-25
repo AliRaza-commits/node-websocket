@@ -1,0 +1,61 @@
+<style>
+    div#message div:nth-child(odd) {
+        background-color: lightblue;
+        padding: 8px;
+    }
+</style>
+<h1>WebSocket Message</h1>
+<div id="message" style="height: 460px; overflow: scroll;"></div>
+<input id="sendBox" style="width: 100%; display: block;" placeholder="Enter Text Message..." />
+<button id="send" style="display: block; width: 100%; padding: 8px; margin-top: 8px;">Send</button>
+<script>
+    (function(){
+        const message = document.querySelector('#message');
+        const sendBox = document.querySelector('#sendBox');
+        const send = document.querySelector('#send');
+
+        let ws;
+
+        function receiveMessage(data) {
+            message.innerHTML += `\n\n<div> ${data}</div>`;
+            sendBox.textContent = '';
+        }
+
+        function init() {
+            if(ws) {
+                ws.onerror = ws.onopen = ws.onclose = null;
+                ws.close();
+            }
+
+            ws = new WebSocket('ws://192.168.18.181:8000');
+            ws.onopen = () => {
+                console.log("connection open");
+            }
+
+            ws.onmessage = ({data}) => receiveMessage(data);
+            ws.onclose = function() {
+                ws = null;
+            }
+
+        }
+        
+        sendBox.onkeypress = (event) => {
+            if(event.key ==='Enter') {
+                ws.send(sendBox.value);
+                sendBox.value = '';
+            }
+        }
+
+        send.onclick = function() {
+            if(!ws) {
+                receiveMessage("Error");
+            }
+            
+            ws.send(sendBox.value);
+            sendBox.value = '';
+        }
+
+        init();
+    })();
+
+</script>
