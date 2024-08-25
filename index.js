@@ -3,7 +3,7 @@ const websocket = require('ws');
 const path = require('path');
 const WebSocket = require('ws'); 
 const sprintf = require('sprintf-js').sprintf;
-const ip_address = '192.168.18.181';
+//const ip_address = '192.168.18.181';
 
 
 const app = express();
@@ -14,7 +14,7 @@ app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname,'public', 'index.html'));
 })
 
-const server = app.listen(8000, ip_address,() => {
+const server = app.listen(8000, () => {
     console.log("Serving app");
 })
 
